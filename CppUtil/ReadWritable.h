@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+namespace cpputil {
+
 //そのクラスが最も一致する属性を仮想継承して使用する
 
 class Readable {
@@ -37,6 +39,8 @@ inline std::istream& operator>>(std::istream& is, Readable& rhs) {
 inline std::ostream& operator<<(std::ostream& os, const Writable& rhs) {
 	rhs.write(os);
 	return os;
+}
+
 }
 
 #endif /* READWRITABLE_H_ */

@@ -13,6 +13,7 @@
 
 namespace cpputil {
 
+//タイマークラス
 class Timer {
 public:
 	//fnをtimes回実行して経過したミリ秒を返す
