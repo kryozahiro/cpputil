@@ -173,6 +173,12 @@ namespace boost {
 	struct has_left_shift<std::ostream, C<T, A>> : public true_type {
 		typedef typename std::enable_if<boost::spirit::traits::is_container<C<T,A>>::type::value>::type sfinae;
 	};
+
+	//Boost.Test対応
+	namespace test_tools {
+		using cpputil::operator>>;
+		using cpputil::operator<<;
+	}
 }
 
 using cpputil::operator>>;

@@ -11,6 +11,7 @@
 #include <cmath>
 #include <complex>
 #include <boost/math/constants/constants.hpp>
+#include <boost/operators.hpp>
 
 namespace cpputil {
 
@@ -18,12 +19,7 @@ namespace cpputil {
 // 定数
 //----------------------------------------
 
-//円周率
-template <class T>
-T pi() {
-	static T pi = boost::math::constants::pi<T>();
-	return pi;
-}
+using namespace boost::math::constants;
 
 //----------------------------------------
 // 角度
@@ -207,7 +203,7 @@ std::complex<T> transform(std::complex<T> z, std::complex<T> translation, double
 
 //変換オブジェクト
 template <class T>
-class Transformation {
+class Transformation : private boost::equality_comparable<Transformation<T>, Transformation<T>> {
 public:
 	Transformation() = default;
 	Transformation(std::complex<T> translation, T rotation, std::complex<T> scaling) :
@@ -278,6 +274,10 @@ public:
 		return *this;
 	}
 
+	//変換の比較
+	template <class X>
+	friend bool operator==(const Transformation<X>& lhs, const Transformation<X>& rhs);
+
 private:
 	//平行移動
 	std::complex<T> translation_ = {0, 0};
@@ -295,6 +295,12 @@ Transformation<T> operator*(const Transformation<T>& lhs, const Transformation<T
 	Transformation<T> ret = lhs;
 	ret *= rhs;
 	return ret;
+}
+
+//変換の比較
+template <class T>
+bool operator==(const Transformation<T>& lhs, const Transformation<T>& rhs) {
+	return lhs.translation_ == rhs.translation_ and lhs.rotation_ == rhs.rotation_ and lhs.scaling_ == rhs.scaling_;
 }
 
 //運動
