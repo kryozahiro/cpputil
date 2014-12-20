@@ -10,10 +10,18 @@
 
 namespace cpputil {
 
+#define CPPUTIL_CLONEABLE\
+	virtual clone_type* clone() override {\
+		typedef std::remove_pointer<decltype(this)>::type this_type;\
+		return new this_type(*this);\
+	}
+
+template <class CloneType>
 class Cloneable {
 public:
+	typedef CloneType clone_type;
 	virtual ~Cloneable() = default;
-	virtual Cloneable* clone() = 0;
+	virtual CloneType* clone() = 0;
 };
 
 }
