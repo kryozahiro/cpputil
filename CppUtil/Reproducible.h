@@ -58,8 +58,8 @@ public:
 			//何もしない
 		}
 		try {
-		std::string unusedStr = gameTree.get<std::string>("Unused");
-		unused = getCondition(unusedStr);
+			std::string unusedStr = gameTree.get<std::string>("Unused");
+			unused = getCondition(unusedStr);
 		} catch (std::exception& e) {
 			//何もしない
 		}
@@ -73,6 +73,7 @@ protected:
 	//再現
 	bool testReproduction(int time = 0) {
 		if (prevTime == INT_MAX) {
+			randomEngine = uninitializedEngine;
 			initialize();
 			initializedEngine = randomEngine;
 			prevTime = time;

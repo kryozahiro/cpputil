@@ -13,8 +13,7 @@
 
 namespace cpputil {
 
-//[first, last)からcount個を選んで先頭に配置し、残りを後ろへ回す
-//残った要素の先頭へのイテレータを返す
+//[first, last)からランダムに選んで[first, middle)に配置し、残りを後ろへ回す
 template <class RandomIt, class URNG>
 void partial_shuffle(RandomIt first, RandomIt middle, RandomIt last, URNG&& g) {
 	typedef typename std::iterator_traits<RandomIt>::difference_type diff_t;
