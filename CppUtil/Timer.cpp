@@ -13,6 +13,7 @@ const std::chrono::high_resolution_clock::time_point Timer::EPOCH = std::chrono:
 
 int Timer::profile(function<void ()> fn, int times) {
 	Timer profiler;
+	profiler.start();
 	for (int i = 0; i < times; ++i) {
 		fn();
 	}
@@ -30,7 +31,7 @@ void Timer::start() {
 }
 
 int Timer::stop() {
-	totalTime = elapsed();
+	totalTime += elapsed();
 	startTime = EPOCH;
 	return totalTime;
 }

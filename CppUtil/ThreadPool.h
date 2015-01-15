@@ -8,33 +8,51 @@
 #ifndef THREADPOOL_H_
 #define THREADPOOL_H_
 
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
 #include <queue>
-#include <boost/thread.hpp>
 
 namespace cpputil {
 
 //スレッドプール
 class ThreadPool {
 public:
-	ThreadPool(int size);
+	//size個のスレッドのプールを作成する
+	//size == 0ならハードウェア依存の数にする
+	ThreadPool(int size = 0);
 
-	//スレッド数を調べる
-	int getThreadCount() const;
+	virtual ~ThreadPool();
+
+	//スレッド数を取得する
+	int getThreadSize() const;
 
 	//タスクを追加する
-	void put(std::function<void ()> task);
+	void addTask(std::function<void ()> task);
+
+	//全てのタスクの完了を待つ
+	void waitTasks();
 
 private:
-	std::queue<std::function<void ()> > tasks;
-	boost::thread_group threadGroup;
-	boost::mutex taskMutex;
-	boost::condition_variable taskCondition;
+	//管理している全てのスレッド
+	std::vector<std::shared_ptr<std::thread>> pool;
+	std::condition_variable activate;
+	std::condition_variable allIdle;
+	std::atomic_uint idleThreads;
 
-	//キューからタスクを一つ取り出す
-	std::function<void ()> take();
+	//タスクのキュー
+	std::queue<std::function<void ()> > tasks;
+	std::mutex taskMutex;
+
+	//全スレッドの停止フラグ
+	std::atomic_bool end;
 
 	//個別スレッドのメインループ
 	void run();
+
+	//未処理のタスクがあれば一つ消費する
+	bool doNextTask(std::unique_lock<std::mutex>& lock);
 };
 
 }
