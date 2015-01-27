@@ -22,6 +22,34 @@ namespace cpputil {
 using namespace boost::math::constants;
 
 //----------------------------------------
+// スケーリング
+//----------------------------------------
+
+//線形変換
+template <class T>
+T scale(T value, T ratio, T bias) {
+	return ratio * value + bias;
+}
+
+//範囲の線形変換
+template <class T>
+T scale(T value, std::pair<T, T> from_range, std::pair<T, T> to_range) {
+	T ratio = (to_range.second - to_range.first) / (from_range.second - from_range.first);
+	T bias = to_range.first - from_range.first * ratio;
+	return scale(value, ratio, bias);
+}
+
+//全体の平均を保って最大値を平均のscaling倍にするような線形変換
+//f(mean) = a * mean + b = average
+//f(max) = a * max + b = scale * average
+template <class T>
+T scale(T value, T mean, T max, T scaling) {
+	T ratio = mean * (scaling - 1.0) / (max - mean);
+	T bias = mean * (1.0 - ratio);
+	return scale(value, ratio, bias);
+}
+
+//----------------------------------------
 // 角度
 //----------------------------------------
 

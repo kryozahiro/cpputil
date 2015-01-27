@@ -70,35 +70,40 @@ protected:
 	//乱数を使用した初期化
 	virtual void initialize() = 0;
 
+	//時間を進める
+	void advanceTime(int amount) {
+		++currentTime;
+	}
+
 	//再現
-	bool testReproduction(int time = 0) {
+	bool testReproduction() {
 		if (prevTime == INT_MAX) {
 			randomEngine = uninitializedEngine;
 			initialize();
 			initializedEngine = randomEngine;
-			prevTime = time;
+			prevTime = currentTime;
 			return true;
 		}
 
 		//初期化前へ戻す
-		if (uninitialized != NEVER and (uninitialized == ALWAYS or prevTime / uninitialized != time / uninitialized)) {
+		if (uninitialized != NEVER and (uninitialized == ALWAYS or prevTime / uninitialized != currentTime / uninitialized)) {
 			randomEngine = uninitializedEngine;
 			initialize();
 			initializedEngine = randomEngine;
-			prevTime = time;
+			prevTime = currentTime;
 			return true;
 		}
 		//再初期化する
-		if (reinitialize != NEVER and (reinitialize == ALWAYS or prevTime / reinitialize != time / reinitialize)) {
+		if (reinitialize != NEVER and (reinitialize == ALWAYS or prevTime / reinitialize != currentTime / reinitialize)) {
 			initialize();
 			initializedEngine = randomEngine;
-			prevTime = time;
+			prevTime = currentTime;
 			return true;
 		}
 		//初期化後へ戻す
-		if (unused != NEVER and (unused == ALWAYS or prevTime / unused != time / unused)) {
+		if (unused != NEVER and (unused == ALWAYS or prevTime / unused != currentTime / unused)) {
 			randomEngine = initializedEngine;
-			prevTime = time;
+			prevTime = currentTime;
 			return true;
 		}
 		return false;
@@ -120,7 +125,8 @@ private:
 	int reinitialize = NEVER;
 	int unused = NEVER;
 
-	//前回呼ばれた時間
+	//時間
+	int currentTime = 0;
 	int prevTime = INT_MAX;
 
 	//文字列から条件を取得

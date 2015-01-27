@@ -16,19 +16,19 @@ namespace cpputil {
 
 class Readable {
 public:
-	virtual ~Readable() {};
+	virtual ~Readable() = default;
 	virtual void read(std::istream& is) = 0;
 };
 
 class Writable {
 public:
-	virtual ~Writable() {};
+	virtual ~Writable() = default;
 	virtual void write(std::ostream& os) const = 0;
 };
 
 class ReadWritable : public virtual Readable, public virtual Writable {
 public:
-	virtual ~ReadWritable() {};
+	virtual ~ReadWritable() = default;
 };
 
 inline std::istream& operator>>(std::istream& is, Readable& rhs) {
