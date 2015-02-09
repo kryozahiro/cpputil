@@ -32,6 +32,7 @@
 								<option id="gnu.cpp.compiler.option.dialect.std.703715652" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.2029223165" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.other.other.2108669703" name="その他のフラグ" superClass="gnu.cpp.compiler.option.other.other" value="-pipe -c -fmessage-length=0" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.1520057094" superClass="gnu.cpp.compiler.option.optimization.flags" value="-fopenmp" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.449619263" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.lib.debug.2058076134" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.lib.debug">
@@ -83,7 +84,7 @@
 								<option id="gnu.cpp.compiler.option.dialect.std.925734638" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1689476503" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.other.other.114617428" name="その他のフラグ" superClass="gnu.cpp.compiler.option.other.other" value="-pipe -c -fmessage-length=0" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.23967332" superClass="gnu.cpp.compiler.option.optimization.flags" value="-march=native" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.23967332" name="その他の最適化フラグ" superClass="gnu.cpp.compiler.option.optimization.flags" value="-march=native -fopenmp" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1203000166" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.mingw.lib.release.1941025683" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.lib.release">

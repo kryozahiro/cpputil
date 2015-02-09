@@ -42,7 +42,7 @@ private:
 	std::atomic_uint idleThreads;
 
 	//タスクのキュー
-	std::queue<std::function<void ()> > tasks;
+	std::queue<std::function<void ()>> tasks;
 	std::mutex taskMutex;
 
 	//全スレッドの停止フラグ
