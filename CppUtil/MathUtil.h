@@ -266,9 +266,9 @@ public:
 	//逆変換
 	Transformation<T> inverse() {
 		return Transformation<T>(
-			cpputil::rotate(cpputil::scale(translation_, (T)1 / scaling_), -rotation_),
+			-cpputil::rotate(cpputil::scale(translation_, 1.0 / scaling_), -rotation_),
 			-rotation_,
-			(T)1 / scaling_
+			1.0 / scaling_
 		);
 	}
 

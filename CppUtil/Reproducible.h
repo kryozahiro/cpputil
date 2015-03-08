@@ -72,7 +72,10 @@ protected:
 
 	//時間を進める
 	void advanceTime(int amount) {
-		++currentTime;
+		for (int i = 0; i < amount; ++i) {
+			++currentTime;
+			testReproduction();
+		}
 	}
 
 	//再現
