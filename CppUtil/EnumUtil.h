@@ -63,7 +63,7 @@ public:\
 	explicit Name(int value) {\
 		enumHolder.value = static_cast<Enum>(value);\
 	}\
-	operator Enum() {\
+	operator Enum() const {\
 		return enumHolder.value;\
 	}\
 	void read(std::istream& is) {\
