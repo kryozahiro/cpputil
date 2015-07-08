@@ -14,8 +14,6 @@
 #include <boost/bimap/unordered_set_of.hpp>
 #include "ReadWritable.h"
 
-//wip
-
 namespace cpputil {
 
 namespace detail {
@@ -42,6 +40,8 @@ namespace detail {
 	}
 }
 
+//文字列変換付きenum
+//使用例：CPPUTIL_ENUM(Fruit, APPLE, BANANA = 3, ORANGE);
 #define CPPUTIL_ENUM(Name, ...)\
 class Name : public virtual cpputil::ReadWritable {\
 public:\
