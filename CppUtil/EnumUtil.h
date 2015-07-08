@@ -12,7 +12,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/bimap/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
-#include "ReadWritable.h"
+#include <boost/lexical_cast.hpp>
 
 namespace cpputil {
 
@@ -26,6 +26,9 @@ namespace detail {
 		int value = 0;
 		for (std::string& line : lines) {
 			boost::algorithm::trim(line);
+			if (line.size() == 0) {
+				continue;
+			}
 
 			//=で分解を試みる
 			std::vector<std::string> terms;
@@ -34,36 +37,42 @@ namespace detail {
 				//分解できれば値を更新
 				value = atoi(terms[1].c_str());
 			}
+
+			//値を追加
 			registry.insert(typename boost::bimaps::bimap<boost::bimaps::unordered_set_of<T>, boost::bimaps::unordered_set_of<std::string>>::value_type(static_cast<T>(value), terms[0]));
 			++value;
 		}
 	}
 }
 
+//SFINAE用の基底クラス
+struct CppUtilEnumBase {};
+
 //文字列変換付きenum
 //使用例：CPPUTIL_ENUM(Fruit, APPLE, BANANA = 3, ORANGE);
 #define CPPUTIL_ENUM(Name, ...)\
-class Name : public virtual cpputil::ReadWritable {\
+class Name : cpputil::CppUtilEnumBase {\
 public:\
 	enum Enum {\
 		__VA_ARGS__\
 	};\
-	Name() : Name(static_cast<Enum>(0)){\
+	Name() = default;\
+	Name(Enum value) {\
+		enumHolder.value = value;\
 	}\
-	Name(Enum value) : value(value) {\
+	explicit Name(int value) {\
+		enumHolder.value = static_cast<Enum>(value);\
 	}\
-	explicit Name(int value) : value(static_cast<Enum>(value)) {\
+	operator Enum() {\
+		return enumHolder.value;\
 	}\
-	explicit operator int() {\
-		return value;\
-	}\
-	virtual void read(std::istream& is) {\
+	void read(std::istream& is) {\
 		std::string buf;\
 		is >> buf;\
-		value = getRegistry().right.at(buf);\
+		enumHolder.value = getRegistry().right.at(buf);\
 	}\
-	virtual void write(std::ostream& os) const {\
-		os << getRegistry().left.at(value);\
+	void write(std::ostream& os) const {\
+		os << getRegistry().left.at(enumHolder.value);\
 	}\
 private:\
 	typedef boost::bimaps::bimap<boost::bimaps::unordered_set_of<Enum>, boost::bimaps::unordered_set_of<std::string>> registry_type;\
@@ -77,9 +86,39 @@ private:\
 		static RegistryHolder registryHolder;\
 		return registryHolder.registry;\
 	}\
-	Enum value;\
-};
+	struct EnumHolder{\
+		Enum value;\
+	} enumHolder;\
+};\
+static_assert(std::is_pod<Name>(), "class Name should be POD");
+
+//入出力演算子
+template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
+inline std::istream& operator>>(std::istream& is, T& rhs) {
+	rhs.read(is);
+	return is;
+}
+template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
+inline std::ostream& operator<<(std::ostream& os, const T& rhs) {
+	rhs.write(os);
+	return os;
+}
 
 }
+
+//ADL対策
+//特にlexical_cast出来るようにする
+namespace boost {
+	using cpputil::operator>>;
+	using cpputil::operator<<;
+
+	template <>
+	struct has_right_shift<std::istream, cpputil::CppUtilEnumBase> : public true_type {};
+	template <>
+	struct has_left_shift<std::ostream, cpputil::CppUtilEnumBase> : public true_type {};
+}
+
+using cpputil::operator>>;
+using cpputil::operator<<;
 
 #endif /* CPPUTIL_ENUMUTIL_H_ */
