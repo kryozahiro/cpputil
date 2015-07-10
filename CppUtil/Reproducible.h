@@ -29,41 +29,8 @@ public:
 	 * @param unused 乱数系列を初期化済だが未使用の状態に戻すサイクル
 	 * @param seed 乱数シード
 	 */
-	Reproducible(int uninitialized, int reinitialize, int unused, int seed = INT_MAX) :
-			uninitialized(uninitialized), reinitialize(reinitialize), unused(unused) {
-		if (seed == INT_MAX) {
-			uninitializedEngine = RandomEngine(time(NULL));
-		} else {
-			uninitializedEngine = RandomEngine(seed);
-		}
-	}
-	Reproducible(const boost::property_tree::ptree& gameTree) {
-		std::string seed = gameTree.get<std::string>("Seed");
-		if (seed == "Random") {
-			uninitializedEngine = RandomEngine(time(NULL));
-		} else {
-			uninitializedEngine = RandomEngine(atoi(seed.c_str()));
-		}
-
-		try {
-			std::string uninitializedStr = gameTree.get<std::string>("Uninitialized");
-			uninitialized = getCondition(uninitializedStr);
-		} catch (std::exception& e) {
-			//何もしない
-		}
-		try {
-			std::string reinitializeStr = gameTree.get<std::string>("Reinitialize");
-			reinitialize = getCondition(reinitializeStr);
-		} catch (std::exception& e) {
-			//何もしない
-		}
-		try {
-			std::string unusedStr = gameTree.get<std::string>("Unused");
-			unused = getCondition(unusedStr);
-		} catch (std::exception& e) {
-			//何もしない
-		}
-	}
+	Reproducible(int uninitialized, int reinitialize, int unused, int seed = INT_MAX);
+	Reproducible(const boost::property_tree::ptree& gameTree);
 	virtual ~Reproducible() = default;
 
 protected:
@@ -71,51 +38,13 @@ protected:
 	virtual void initialize() = 0;
 
 	//時間を進める
-	void advanceTime(int amount) {
-		for (int i = 0; i < amount; ++i) {
-			++currentTime;
-			testReproduction();
-		}
-	}
+	void advanceTime(int amount);
 
 	//再現
-	bool testReproduction() {
-		if (prevTime == INT_MAX) {
-			randomEngine = uninitializedEngine;
-			initialize();
-			initializedEngine = randomEngine;
-			prevTime = currentTime;
-			return true;
-		}
-
-		//初期化前へ戻す
-		if (uninitialized != NEVER and (uninitialized == ALWAYS or prevTime / uninitialized != currentTime / uninitialized)) {
-			randomEngine = uninitializedEngine;
-			initialize();
-			initializedEngine = randomEngine;
-			prevTime = currentTime;
-			return true;
-		}
-		//再初期化する
-		if (reinitialize != NEVER and (reinitialize == ALWAYS or prevTime / reinitialize != currentTime / reinitialize)) {
-			initialize();
-			initializedEngine = randomEngine;
-			prevTime = currentTime;
-			return true;
-		}
-		//初期化後へ戻す
-		if (unused != NEVER and (unused == ALWAYS or prevTime / unused != currentTime / unused)) {
-			randomEngine = initializedEngine;
-			prevTime = currentTime;
-			return true;
-		}
-		return false;
-	}
+	bool testReproduction();
 
 	//乱数エンジンを取得
-	RandomEngine& getEngine() {
-		return randomEngine;
-	}
+	RandomEngine& getEngine();
 
 private:
 	//各状態の乱数エンジン
@@ -133,17 +62,106 @@ private:
 	int prevTime = INT_MAX;
 
 	//文字列から条件を取得
-	int getCondition(std::string str) {
-		if (str == "Every") {
-			return EVERY;
-		} else if (str == "Always") {
-			return ALWAYS;
-		} else if (str == "Never") {
-			return NEVER;
-		}
-		return atoi(str.c_str());
-	}
+	int getCondition(std::string str);
 };
+
+template <class RandomEngine>
+Reproducible<RandomEngine>::Reproducible(int uninitialized, int reinitialize, int unused, int seed) :
+		uninitialized(uninitialized), reinitialize(reinitialize), unused(unused) {
+	if (seed == INT_MAX) {
+		uninitializedEngine = RandomEngine(time(NULL));
+	} else {
+		uninitializedEngine = RandomEngine(seed);
+	}
+}
+
+template <class RandomEngine>
+Reproducible<RandomEngine>::Reproducible(const boost::property_tree::ptree& gameTree) {
+	std::string seed = gameTree.get<std::string>("Seed");
+	if (seed == "Random") {
+		uninitializedEngine = RandomEngine(time(NULL));
+	} else {
+		uninitializedEngine = RandomEngine(atoi(seed.c_str()));
+	}
+
+	try {
+		std::string uninitializedStr = gameTree.get<std::string>("Uninitialized");
+		uninitialized = getCondition(uninitializedStr);
+	} catch (std::exception& e) {
+		//何もしない
+	}
+	try {
+		std::string reinitializeStr = gameTree.get<std::string>("Reinitialize");
+		reinitialize = getCondition(reinitializeStr);
+	} catch (std::exception& e) {
+		//何もしない
+	}
+	try {
+		std::string unusedStr = gameTree.get<std::string>("Unused");
+		unused = getCondition(unusedStr);
+	} catch (std::exception& e) {
+		//何もしない
+	}
+}
+
+template <class RandomEngine>
+void Reproducible<RandomEngine>::advanceTime(int amount) {
+	for (int i = 0; i < amount; ++i) {
+		++currentTime;
+		testReproduction();
+	}
+}
+
+template <class RandomEngine>
+bool Reproducible<RandomEngine>::testReproduction() {
+	if (prevTime == INT_MAX) {
+		randomEngine = uninitializedEngine;
+		initialize();
+		initializedEngine = randomEngine;
+		prevTime = currentTime;
+		return true;
+	}
+
+	//初期化前へ戻す
+	if (uninitialized != NEVER and (uninitialized == ALWAYS or prevTime / uninitialized != currentTime / uninitialized)) {
+		randomEngine = uninitializedEngine;
+		initialize();
+		initializedEngine = randomEngine;
+		prevTime = currentTime;
+		return true;
+	}
+	//再初期化する
+	if (reinitialize != NEVER and (reinitialize == ALWAYS or prevTime / reinitialize != currentTime / reinitialize)) {
+		initialize();
+		initializedEngine = randomEngine;
+		prevTime = currentTime;
+		return true;
+	}
+	//初期化後へ戻す
+	if (unused != NEVER and (unused == ALWAYS or prevTime / unused != currentTime / unused)) {
+		randomEngine = initializedEngine;
+		prevTime = currentTime;
+		return true;
+	}
+	return false;
+}
+
+template <class RandomEngine>
+RandomEngine& Reproducible<RandomEngine>::getEngine() {
+	return randomEngine;
+}
+
+template <class RandomEngine>
+int Reproducible<RandomEngine>::getCondition(std::string str) {
+	if (str == "Every") {
+		return EVERY;
+	} else if (str == "Always") {
+		return ALWAYS;
+	} else if (str == "Never") {
+		return NEVER;
+	}
+	return atoi(str.c_str());
+}
 
 }
 

@@ -24,20 +24,26 @@ namespace detail {
 template<class CharT>
 class ScopedSkip {
 public:
-	ScopedSkip(std::basic_istream<CharT>& is) : is(is), skip(is.flags() & std::ios_base::skipws) {
-		if (!skip) {
-			is >> std::skipws;
-		}
-	}
-	~ScopedSkip() {
-		if (!skip) {
-			is >> std::noskipws;
-		}
-	}
+	ScopedSkip(std::basic_istream<CharT>& is);
+	~ScopedSkip();
 private:
 	std::basic_istream<CharT>& is;
 	bool skip;
 };
+
+template<class CharT>
+ScopedSkip<CharT>::ScopedSkip(std::basic_istream<CharT>& is) : is(is), skip(is.flags() & std::ios_base::skipws) {
+	if (!skip) {
+		is >> std::skipws;
+	}
+}
+
+template<class CharT>
+ScopedSkip<CharT>::~ScopedSkip() {
+	if (!skip) {
+		is >> std::noskipws;
+	}
+}
 
 }
 

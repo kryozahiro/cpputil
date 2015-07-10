@@ -125,31 +125,39 @@ namespace detail {
 
 template <class T, int p>
 struct lpNormHelper {
-	static T lpNorm(std::complex<T> z) {
-		return cpputil::lpNorm(z, static_cast<T>(p));
-	}
+	static T lpNorm(std::complex<T> z);
 };
+template <class T, int p>
+T lpNormHelper<T, p>::lpNorm(std::complex<T> z) {
+	return cpputil::lpNorm(z, static_cast<T>(p));
+}
 
 template <class T>
 struct lpNormHelper<T, 1> {
-	static T lpNorm(std::complex<T> z) {
-		return std::fabs(z.real()) + std::fabs(z.imag());
-	}
+	static T lpNorm(std::complex<T> z);
 };
+template <class T>
+T lpNormHelper<T, 1>::lpNorm(std::complex<T> z) {
+	return std::fabs(z.real()) + std::fabs(z.imag());
+}
 
 template <class T>
 struct lpNormHelper<T, 2> {
-	static T lpNorm(std::complex<T> z) {
-		return std::abs(z);
-	}
+	static T lpNorm(std::complex<T> z);
 };
+template <class T>
+T lpNormHelper<T, 2>::lpNorm(std::complex<T> z) {
+	return std::abs(z);
+}
 
 template <class T>
 struct lpNormHelper<T, INT_MAX> {
-	static T lpNorm(std::complex<T> z) {
-		return std::max(std::fabs(z.real()), std::fabs(z.imag()));
-	}
+	static T lpNorm(std::complex<T> z);
 };
+template <class T>
+T lpNormHelper<T, INT_MAX>::lpNorm(std::complex<T> z) {
+	return std::max(std::fabs(z.real()), std::fabs(z.imag()));
+}
 
 }
 
@@ -234,73 +242,28 @@ template <class T>
 class Transformation : private boost::equality_comparable<Transformation<T>, Transformation<T>> {
 public:
 	Transformation() = default;
-	Transformation(std::complex<T> translation, T rotation, std::complex<T> scaling) :
-		translation_(translation), rotation_(rotation), scaling_(scaling) {
-	}
+	Transformation(std::complex<T> translation, T rotation, std::complex<T> scaling);
 
 	//アクセサ
-	std::complex<T> translation() const {
-		return translation_;
-	}
-	void translation(std::complex<T> t) {
-		translation_ = t;
-	}
-	T rotation() const {
-		return rotation_;
-	}
-	void rotation(T rad) {
-		rotation_ = rad;
-	}
-	std::complex<T> scaling() const {
-		return scaling_;
-	}
-	void scaling(std::complex<T> s) {
-		scaling_ = s;
-	}
+	std::complex<T> translation() const;
+	void translation(std::complex<T> t);
+	T rotation() const;
+	void rotation(T rad);
+	std::complex<T> scaling() const;
+	void scaling(std::complex<T> s);
 
 	//変換の適用
-	std::complex<T> operator*(std::complex<T> z) {
-		return cpputil::transform(z, translation_, rotation_, scaling_);
-	}
+	std::complex<T> operator*(std::complex<T> z);
 
 	//逆変換
-	Transformation<T> inverse() {
-		return Transformation<T>(
-			-cpputil::rotate(cpputil::scale(translation_, 1.0 / scaling_), -rotation_),
-			-rotation_,
-			1.0 / scaling_
-		);
-	}
+	Transformation<T> inverse();
 
 	//変換オブジェクトの変換
-	void translate(std::complex<T> t, bool local = true) {
-		if (local) {
-			translation_ = cpputil::transform(t, translation_, rotation_, scaling_);
-		} else {
-			translation_ = cpputil::translate(translation_, t);
-		}
-	}
-	void rotate(double rad, bool local = true) {
-		rotation_ = cpputil::rotate(rotation_, rad);
-		if (!local) {
-			translation_ = cpputil::rotate(translation_, rad);
-		}
-	}
-	void scale(std::complex<T> s, bool local = true) {
-		scaling_ = cpputil::scale(scaling_, s);
-		if (!local) {
-			translation_ = cpputil::scale(translation_, s);
-		}
-	}
-	void transform(const Transformation<T>& t, bool local = true) {
-		scale(t.scaling_, local);
-		rotate(t.rotation_, local);
-		translate(t.translation_, local);
-	}
-	Transformation<T>& operator*=(const Transformation<T>& t) {
-		transform(t);
-		return *this;
-	}
+	void translate(std::complex<T> t, bool local = true);
+	void rotate(double rad, bool local = true);
+	void scale(std::complex<T> s, bool local = true);
+	void transform(const Transformation<T>& t, bool local = true);
+	Transformation<T>& operator*=(const Transformation<T>& t);
 
 	//変換の比較
 	template <class X>
@@ -316,6 +279,93 @@ private:
 	//拡縮
 	std::complex<T> scaling_ = {1, 1};
 };
+
+template <class T>
+Transformation<T>::Transformation(std::complex<T> translation, T rotation, std::complex<T> scaling) :
+	translation_(translation), rotation_(rotation), scaling_(scaling) {
+}
+
+template <class T>
+std::complex<T> Transformation<T>::translation() const {
+	return translation_;
+}
+
+template <class T>
+void Transformation<T>::translation(std::complex<T> t) {
+	translation_ = t;
+}
+
+template <class T>
+T Transformation<T>::rotation() const {
+	return rotation_;
+}
+
+template <class T>
+void Transformation<T>::rotation(T rad) {
+	rotation_ = rad;
+}
+
+template <class T>
+std::complex<T> Transformation<T>::scaling() const {
+	return scaling_;
+}
+
+template <class T>
+void Transformation<T>::scaling(std::complex<T> s) {
+	scaling_ = s;
+}
+
+template <class T>
+std::complex<T> Transformation<T>::operator*(std::complex<T> z) {
+	return cpputil::transform(z, translation_, rotation_, scaling_);
+}
+
+template <class T>
+Transformation<T> Transformation<T>::inverse() {
+	return Transformation<T>(
+		-cpputil::rotate(cpputil::scale(translation_, 1.0 / scaling_), -rotation_),
+		-rotation_,
+		1.0 / scaling_
+	);
+}
+
+template <class T>
+void Transformation<T>::translate(std::complex<T> t, bool local) {
+	if (local) {
+		translation_ = cpputil::transform(t, translation_, rotation_, scaling_);
+	} else {
+		translation_ = cpputil::translate(translation_, t);
+	}
+}
+
+template <class T>
+void Transformation<T>::rotate(double rad, bool local) {
+	rotation_ = cpputil::rotate(rotation_, rad);
+	if (!local) {
+		translation_ = cpputil::rotate(translation_, rad);
+	}
+}
+
+template <class T>
+void Transformation<T>::scale(std::complex<T> s, bool local) {
+	scaling_ = cpputil::scale(scaling_, s);
+	if (!local) {
+		translation_ = cpputil::scale(translation_, s);
+	}
+}
+
+template <class T>
+void Transformation<T>::transform(const Transformation<T>& t, bool local) {
+	scale(t.scaling_, local);
+	rotate(t.rotation_, local);
+	translate(t.translation_, local);
+}
+
+template <class T>
+Transformation<T>& Transformation<T>::operator*=(const Transformation<T>& t) {
+	transform(t);
+	return *this;
+}
 
 //変換の合成
 template <class T>
