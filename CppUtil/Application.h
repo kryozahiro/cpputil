@@ -49,6 +49,7 @@ private:
 template <class ConcreteApplication>
 int Application<ConcreteApplication>::main(int argc, char* argv[]) {
 	//オプションの設定
+	options.add_options()("help,h", "produce help message");
 	initOptions(options, positional);
 
 	//オプションのパース
