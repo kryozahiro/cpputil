@@ -8,12 +8,10 @@
 #ifndef GENERICIO_H_
 #define GENERICIO_H_
 
-#include <algorithm>
 #include <iostream>
-#include <iterator>
-#include <type_traits>
+#include <boost/type_traits/has_right_shift.hpp>
+#include <boost/type_traits/has_left_shift.hpp>
 #include <boost/spirit/home/support/container.hpp>
-#include <boost/lexical_cast.hpp>
 
 namespace cpputil {
 

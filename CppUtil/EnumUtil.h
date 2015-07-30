@@ -12,7 +12,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/bimap/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
-#include <boost/lexical_cast.hpp>
 
 namespace cpputil {
 
@@ -105,20 +104,5 @@ inline std::ostream& operator<<(std::ostream& os, const T& rhs) {
 }
 
 }
-
-//ADL対策
-//特にlexical_cast出来るようにする
-namespace boost {
-	using cpputil::operator>>;
-	using cpputil::operator<<;
-
-	template <>
-	struct has_right_shift<std::istream, cpputil::CppUtilEnumBase> : public true_type {};
-	template <>
-	struct has_left_shift<std::ostream, cpputil::CppUtilEnumBase> : public true_type {};
-}
-
-using cpputil::operator>>;
-using cpputil::operator<<;
 
 #endif /* CPPUTIL_ENUMUTIL_H_ */
