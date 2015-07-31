@@ -42,15 +42,27 @@ namespace detail {
 			++value;
 		}
 	}
-}
 
-//SFINAE用の基底クラス
-struct CppUtilEnumBase {};
+	//SFINAE用の基底クラス
+	struct CppUtilEnumBase {};
+
+	//入出力演算子
+	template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
+	inline std::istream& operator>>(std::istream& is, T& rhs) {
+		rhs.read(is);
+		return is;
+	}
+	template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
+	inline std::ostream& operator<<(std::ostream& os, const T& rhs) {
+		rhs.write(os);
+		return os;
+	}
+}
 
 //文字列変換付きenum
 //使用例：CPPUTIL_ENUM(Fruit, APPLE, BANANA = 3, ORANGE);
 #define CPPUTIL_ENUM(Name, ...)\
-class Name : cpputil::CppUtilEnumBase {\
+class Name : cpputil::detail::CppUtilEnumBase {\
 public:\
 	enum Enum {\
 		__VA_ARGS__\
@@ -90,18 +102,6 @@ private:\
 	} enumHolder;\
 };\
 static_assert(std::is_pod<Name>(), "class Name should be POD");
-
-//入出力演算子
-template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
-inline std::istream& operator>>(std::istream& is, T& rhs) {
-	rhs.read(is);
-	return is;
-}
-template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
-inline std::ostream& operator<<(std::ostream& os, const T& rhs) {
-	rhs.write(os);
-	return os;
-}
 
 }
 

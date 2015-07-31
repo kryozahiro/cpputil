@@ -15,6 +15,14 @@
 
 namespace cpputil {
 
+namespace detail {
+	//終了ハンドラ
+	extern "C" void cppUtilExitHandler(int sig);
+}
+
+//終了状態かどうか
+bool isEnd();
+
 template <class ConcreteApplication>
 class Application : public boost::serialization::singleton<ConcreteApplication> {
 public:
@@ -32,15 +40,8 @@ protected:
 	virtual void initOptions(boost::program_options::options_description& options,
 			boost::program_options::positional_options_description& positional) = 0;
 	virtual int mainImpl(boost::program_options::variables_map& args) = 0;
-	virtual void exitHandlerImpl() {}
 
 private:
-	//終了ハンドラ
-	static void exitHandler(int sig);
-
-	//終了状態
-	bool end = false;
-
 	//プログラムオプション
 	boost::program_options::options_description options;
 	boost::program_options::positional_options_description positional;
@@ -77,20 +78,14 @@ int Application<ConcreteApplication>::main(int argc, char* argv[]) {
 
 template <class ConcreteApplication>
 bool Application<ConcreteApplication>::isEnd() {
-	return end;
+	return isEnd();
 }
 
 template <class ConcreteApplication>
 Application<ConcreteApplication>::Application() : options("Allowed options") {
 	//シグナルハンドラの設定
-	signal(SIGTERM, exitHandler);
-	signal(SIGINT, exitHandler);
-}
-
-template <class ConcreteApplication>
-void Application<ConcreteApplication>::exitHandler(int sig) {
-	ConcreteApplication::get_mutable_instance().end = true;
-	ConcreteApplication::get_mutable_instance().exitHandlerImpl();
+	signal(SIGTERM, detail::cppUtilExitHandler);
+	signal(SIGINT, detail::cppUtilExitHandler);
 }
 
 }
