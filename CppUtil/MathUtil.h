@@ -252,13 +252,15 @@ public:
 	std::complex<T> scaling() const;
 	void scaling(std::complex<T> s);
 
-	//変換の適用
+	//位置を変換する
 	std::complex<T> operator*(std::complex<T> z);
 
-	//逆変換
+	//逆変換の取得
 	Transformation<T> inverse();
 
-	//変換オブジェクトの変換
+	//変換オブジェクトを姿勢と解釈して変換させる
+	//local == trueなら姿勢を中心とする座標系での相対変換
+	//local == falseなら姿勢を表現する座標系での絶対変換
 	void translate(std::complex<T> t, bool local = true);
 	void rotate(double rad, bool local = true);
 	void scale(std::complex<T> s, bool local = true);
@@ -348,8 +350,9 @@ void Transformation<T>::rotate(double rad, bool local) {
 
 template <class T>
 void Transformation<T>::scale(std::complex<T> s, bool local) {
-	scaling_ = cpputil::scale(scaling_, s);
-	if (!local) {
+	if (local) {
+		scaling_ = cpputil::scale(scaling_, s);
+	} else {
 		translation_ = cpputil::scale(translation_, s);
 	}
 }
