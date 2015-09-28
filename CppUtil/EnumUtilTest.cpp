@@ -71,13 +71,6 @@ BOOST_AUTO_TEST_CASE(CppUtilEnumCase) {
 		switch (CppUtil::BLUE) { case CppUtil::BLUE: break; default: break; }
 	}
 
-	//入出力演算子
-	assert(boost::lexical_cast<CppUtil>("BLUE") == CppUtil::BLUE);
-	//assert(boost::lexical_cast<std::string>(CppUtil::BLUE) == "BLUE");
-	assert(boost::lexical_cast<std::string>(CppUtil(CppUtil::BLUE)) == "BLUE");
-	CppUtil blue = CppUtil::BLUE;
-	assert(boost::lexical_cast<std::string>(blue) == "BLUE");
-
 	//比較演算子
 	assert(CppUtil::RED == CppUtil::RED and !(CppUtil::RED == CppUtil::GREEN));
 	assert(!(CppUtil::RED != CppUtil::RED) and CppUtil::RED != CppUtil::GREEN);
@@ -87,6 +80,17 @@ BOOST_AUTO_TEST_CASE(CppUtilEnumCase) {
 	assert(!(CppUtil::BLUE > CppUtil::BLUE) and CppUtil::BLUE > CppUtil::GREEN);
 	CppUtil green = CppUtil::GREEN;
 	assert(CppUtil::RED < green and green < CppUtil::BLUE);
+
+	//文字列変換
+	assert(CppUtil("BLUE") == CppUtil::BLUE);
+	assert(to_string(CppUtil::BLUE) == "4");
+	assert(to_string(CppUtil(CppUtil::BLUE)) == "BLUE");
+	CppUtil blue = CppUtil::BLUE;
+	assert(to_string(blue) == "BLUE");
+
+	//入出力演算子
+	assert(boost::lexical_cast<CppUtil>("BLUE") == CppUtil::BLUE);
+	assert(boost::lexical_cast<std::string>(CppUtil(CppUtil::BLUE)) == "BLUE");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

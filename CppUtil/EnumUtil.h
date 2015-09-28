@@ -22,7 +22,7 @@ namespace detail {
 		std::vector<std::string> lines;
 		boost::algorithm::split(lines, args, boost::is_any_of(","));
 
-		int value = 0;
+		T value = 0;
 		for (std::string& line : lines) {
 			boost::algorithm::trim(line);
 			if (line.size() == 0) {
@@ -38,7 +38,7 @@ namespace detail {
 			}
 
 			//値を追加
-			registry.insert(typename boost::bimaps::bimap<boost::bimaps::unordered_set_of<T>, boost::bimaps::unordered_set_of<std::string>>::value_type(static_cast<T>(value), terms[0]));
+			registry.insert(typename boost::bimaps::bimap<boost::bimaps::unordered_set_of<T>, boost::bimaps::unordered_set_of<std::string>>::value_type(value, terms[0]));
 			++value;
 		}
 	}
@@ -47,6 +47,10 @@ namespace detail {
 	struct CppUtilEnumBase {};
 
 	//入出力演算子
+	template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
+	std::string to_string(T t) {
+		return t.to_string();
+	}
 	template <class T, class = typename std::enable_if<std::is_base_of<CppUtilEnumBase, T>::value>::type>
 	inline std::istream& operator>>(std::istream& is, T& rhs) {
 		rhs.read(is);
@@ -71,22 +75,28 @@ public:\
 	Name(Enum value) {\
 		enumHolder.value = value;\
 	}\
-	explicit Name(int value) {\
+	explicit Name(std::underlying_type<Enum>::type value) {\
 		enumHolder.value = static_cast<Enum>(value);\
+	}\
+	explicit Name(const std::string& str) {\
+		enumHolder.value = static_cast<Enum>(getRegistry().right.at(str));\
 	}\
 	operator Enum() const {\
 		return enumHolder.value;\
 	}\
+	std::string to_string() const {\
+		return getRegistry().left.at(enumHolder.value);\
+	}\
 	void read(std::istream& is) {\
 		std::string buf;\
 		is >> buf;\
-		enumHolder.value = getRegistry().right.at(buf);\
+		enumHolder.value = static_cast<Enum>(getRegistry().right.at(buf));\
 	}\
 	void write(std::ostream& os) const {\
-		os << getRegistry().left.at(enumHolder.value);\
+		os << to_string();\
 	}\
 private:\
-	typedef boost::bimaps::bimap<boost::bimaps::unordered_set_of<Enum>, boost::bimaps::unordered_set_of<std::string>> registry_type;\
+	typedef boost::bimaps::bimap<boost::bimaps::unordered_set_of<std::underlying_type<Enum>::type>, boost::bimaps::unordered_set_of<std::string>> registry_type;\
 	struct RegistryHolder {\
 		RegistryHolder() {\
 			cpputil::detail::initRegistry(registry, #__VA_ARGS__);\
@@ -101,7 +111,7 @@ private:\
 		Enum value;\
 	} enumHolder;\
 };\
-static_assert(std::is_pod<Name>(), "class Name should be POD");
+static_assert(std::is_pod<Name>(), "ENUM_UTIL should be POD");
 
 }
 
