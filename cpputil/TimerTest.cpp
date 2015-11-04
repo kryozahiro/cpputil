@@ -5,8 +5,9 @@
  *      Author: kryozahiro
  */
 
-#include "TestUtil.h"
 #include "Timer.h"
+
+#include "TestUtil.h"
 using namespace std;
 using namespace cpputil;
 

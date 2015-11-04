@@ -5,9 +5,11 @@
  *      Author: kryozahiro
  */
 
-#include <boost/lexical_cast.hpp>
-#include "TestUtil.h"
 #include "GenericIo.h"
+
+#include <boost/lexical_cast.hpp>
+
+#include "TestUtil.h"
 using namespace std;
 using namespace cpputil;
 

@@ -5,8 +5,9 @@
  *      Author: kryozahiro
  */
 
-#include <omp.h>
 #include "OpenMp.h"
+
+#include <omp.h>
 
 namespace cpputil {
 

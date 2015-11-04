@@ -5,9 +5,10 @@
  *      Author: kryozahiro
  */
 
-#include "TestUtil.h"
-#include "GenericIo.h"
 #include "MathUtil.h"
+
+#include "GenericIo.h"
+#include "TestUtil.h"
 using namespace std;
 using namespace cpputil;
 

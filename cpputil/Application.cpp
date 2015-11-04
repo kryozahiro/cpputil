@@ -5,8 +5,9 @@
  *      Author: kryozahiro
  */
 
-#include <atomic>
 #include "Application.h"
+
+#include <atomic>
 using namespace std;
 
 namespace cpputil {
