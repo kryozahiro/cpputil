@@ -12,31 +12,19 @@
 
 namespace cpputil {
 
-//そのクラスが最も一致する属性を仮想継承して使用する
-
-class Readable {
+class ReadWritable {
 public:
-	virtual ~Readable() = default;
+	virtual ~ReadWritable() = default;
 	virtual void read(std::istream& is) = 0;
-};
-
-class Writable {
-public:
-	virtual ~Writable() = default;
 	virtual void write(std::ostream& os) const = 0;
 };
 
-class ReadWritable : public virtual Readable, public virtual Writable {
-public:
-	virtual ~ReadWritable() = default;
-};
-
-inline std::istream& operator>>(std::istream& is, Readable& rhs) {
+inline std::istream& operator>>(std::istream& is, ReadWritable& rhs) {
 	rhs.read(is);
 	return is;
 }
 
-inline std::ostream& operator<<(std::ostream& os, const Writable& rhs) {
+inline std::ostream& operator<<(std::ostream& os, const ReadWritable& rhs) {
 	rhs.write(os);
 	return os;
 }

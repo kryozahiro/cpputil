@@ -1,3 +1,6 @@
+*.d
+*.gcno
+*.o
+*.a
+*.exe
 /Debug/
-/Release/
-/Test/

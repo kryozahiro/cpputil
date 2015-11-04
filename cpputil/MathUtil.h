@@ -384,31 +384,6 @@ bool operator==(const Transformation<T>& lhs, const Transformation<T>& rhs) {
 	return lhs.translation_ == rhs.translation_ and lhs.rotation_ == rhs.rotation_ and lhs.scaling_ == rhs.scaling_;
 }
 
-//運動
-//mathというよりphysics
-/*template <class T>
-struct RigidBody : public Transformation<T> {
-	//並進運動
-	T mass = 1;
-	std::complex<T> velocity = {0, 0};
-	std::complex<T> resultantForce = {0, 0};
-
-	//回転運動
-	T momentOfInertia = 1;
-	T angularVelocity = 0;
-	T resultantMoment = 0;
-
-	void update(T dt) {
-		Transformation<T>::translate(velocity * dt);
-		translate(velocity, resultantForce / mass * dt);
-		resultantForce = 0;
-
-		Transformation<T>::rotate(angularVelocity * dt);
-		rotate(angularVelocity, resultantMoment / momentOfInertia * dt);
-		resultantMoment = 0;
-	}
-};*/
-
 }
 
 #endif /* MATHUTIL_H_ */
