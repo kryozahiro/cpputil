@@ -63,8 +63,9 @@ namespace detail {
 	}
 }
 
-//文字列変換付きenum
-//使用例：CPPUTIL_ENUM(Fruit, APPLE, BANANA = 3, ORANGE);
+//! 文字列変換付きenum
+/**使用例：CPPUTIL_ENUM(Fruit, APPLE, BANANA = 3, ORANGE);
+ */
 #define CPPUTIL_ENUM(Name, ...)\
 class Name : cpputil::detail::CppUtilEnumBase {\
 public:\

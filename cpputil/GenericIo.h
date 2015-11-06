@@ -16,36 +16,35 @@
 namespace cpputil {
 
 namespace detail {
+	//! スコープ内で空白をスキップする
+	/** 特にlexical_castに必要
+	 */
+	template<class CharT>
+	class ScopedSkip {
+	public:
+		ScopedSkip(std::basic_istream<CharT>& is);
+		~ScopedSkip();
+	private:
+		std::basic_istream<CharT>& is;
+		bool skip;
+	};
 
-//スコープ内で空白をスキップする
-//特にlexical_castに必要
-template<class CharT>
-class ScopedSkip {
-public:
-	ScopedSkip(std::basic_istream<CharT>& is);
-	~ScopedSkip();
-private:
-	std::basic_istream<CharT>& is;
-	bool skip;
-};
+	template<class CharT>
+	ScopedSkip<CharT>::ScopedSkip(std::basic_istream<CharT>& is) : is(is), skip(is.flags() & std::ios_base::skipws) {
+		if (!skip) {
+			is >> std::skipws;
+		}
+	}
 
-template<class CharT>
-ScopedSkip<CharT>::ScopedSkip(std::basic_istream<CharT>& is) : is(is), skip(is.flags() & std::ios_base::skipws) {
-	if (!skip) {
-		is >> std::skipws;
+	template<class CharT>
+	ScopedSkip<CharT>::~ScopedSkip() {
+		if (!skip) {
+			is >> std::noskipws;
+		}
 	}
 }
 
-template<class CharT>
-ScopedSkip<CharT>::~ScopedSkip() {
-	if (!skip) {
-		is >> std::noskipws;
-	}
-}
-
-}
-
-//std::pair
+//! std::pair input
 template <class T, class U>
 std::istream& operator>>(std::istream& is, std::pair<T, U>& rhs) {
 	detail::ScopedSkip<char> skip(is);
@@ -58,56 +57,61 @@ std::istream& operator>>(std::istream& is, std::pair<T, U>& rhs) {
 	return is;
 }
 
+//! std::pair output
 template <class T, class U>
 std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& rhs) {
 	os << '(' << rhs.first << ", " << rhs.second << ')';
 	return os;
 }
 
-//std::tuple
-template <std::size_t I = 0, class... Types>
-typename std::enable_if<I == sizeof...(Types) - 1, void>::type
-read(std::istream& is, std::tuple<Types...>& t) {
-	is >> std::get<I>(t);
+namespace detail {
+	//! \cond Doxygen_Suppress
+	template <std::size_t I = 0, class... Types> typename std::enable_if<I == sizeof...(Types) - 1, void>::type
+	read(std::istream& is, std::tuple<Types...>& t) {
+		is >> std::get<I>(t);
+	}
+	template <std::size_t I = 0, class... Types> typename std::enable_if<I < sizeof...(Types) - 1, void>::type
+	read(std::istream& is, std::tuple<Types...>& t) {
+		char dummy;
+		is >> std::get<I>(t);
+		is >> dummy;	//','
+		read<I + 1>(is, t);
+	}
+	template <std::size_t I = 0, class... Types>
+	typename std::enable_if<I == sizeof...(Types) - 1, void>::type
+	write(std::ostream& os, const std::tuple<Types...>& t) {
+		os << std::get<I>(t);
+	}
+	template <std::size_t I = 0, class... Types>
+	typename std::enable_if<I < sizeof...(Types) - 1, void>::type
+	write(std::ostream& os, const std::tuple<Types...>& t) {
+		os << std::get<I>(t) << ", ";
+		write<I + 1>(os, t);
+	}
+	//! \endcond
 }
-template <std::size_t I = 0, class... Types>
-typename std::enable_if<I < sizeof...(Types) - 1, void>::type
-read(std::istream& is, std::tuple<Types...>& t) {
-	char dummy;
-	is >> std::get<I>(t);
-	is >> dummy;	//','
-	read<I + 1>(is, t);
-}
+
+//! input std::tuple
 template <class... Types>
 std::istream& operator>>(std::istream& is, std::tuple<Types...>& rhs) {
 	detail::ScopedSkip<char> skip(is);
 	char dummy;
 	is >> dummy;	//'('
-	read(is, rhs);
+	detail::read(is, rhs);
 	is >> dummy;	//')'
 	return is;
 }
 
-template <std::size_t I = 0, class... Types>
-typename std::enable_if<I == sizeof...(Types) - 1, void>::type
-write(std::ostream& os, const std::tuple<Types...>& t) {
-	os << std::get<I>(t);
-}
-template <std::size_t I = 0, class... Types>
-typename std::enable_if<I < sizeof...(Types) - 1, void>::type
-write(std::ostream& os, const std::tuple<Types...>& t) {
-	os << std::get<I>(t) << ", ";
-	write<I + 1>(os, t);
-}
+//! output std::tuple
 template <class... Types>
 std::ostream& operator<<(std::ostream& os, const std::tuple<Types...>& rhs) {
 	os << '(';
-	write(os, rhs);
+	detail::write(os, rhs);
 	os << ')';
 	return os;
 }
 
-//container
+//! input container
 template <template <class, class> class C, class T, class A,
 	class = typename std::enable_if<boost::spirit::traits::is_container<C<T,A>>::type::value>::type
 >
@@ -130,6 +134,7 @@ std::istream& operator>>(std::istream& is, C<T, A>& rhs) {
 	return is;
 }
 
+//! output container
 template <template <class, class> class C, class T, class A,
 	class = typename std::enable_if<boost::spirit::traits::is_container<C<T,A>>::type::value>::type
 >

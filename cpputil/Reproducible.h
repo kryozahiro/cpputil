@@ -13,7 +13,7 @@
 
 namespace cpputil {
 
-//乱数による挙動を再現可能なクラスのインターフェース
+//! 乱数による挙動を再現可能なクラスのインターフェース
 template <class RandomEngine>
 class Reproducible {
 public:
@@ -34,34 +34,34 @@ public:
 	virtual ~Reproducible() = default;
 
 protected:
-	//乱数を使用した初期化
+	//! 乱数を使用した初期化
 	virtual void initialize() = 0;
 
-	//時間を進める
+	//! 時間を進める
 	void advanceTime(int amount);
 
-	//再現
+	//! 再現
 	bool testReproduction();
 
-	//乱数エンジンを取得
+	//! 乱数エンジンを取得
 	RandomEngine& getEngine();
 
 private:
-	//各状態の乱数エンジン
+	//! 各状態の乱数エンジン
 	RandomEngine uninitializedEngine;
 	RandomEngine initializedEngine;
 	RandomEngine randomEngine;
 
-	//各種の初期化条件
+	//! 各種の初期化条件
 	int uninitialized = NEVER;
 	int reinitialize = NEVER;
 	int unused = NEVER;
 
-	//時間
+	//! 時間
 	int currentTime = 0;
 	int prevTime = INT_MAX;
 
-	//文字列から条件を取得
+	//! 文字列から条件を取得
 	int getCondition(std::string str);
 };
 

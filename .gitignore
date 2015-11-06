@@ -1,6 +1,9 @@
-*.d
-*.gcno
-*.o
-*.a
-*.exe
+**/.gitignore
 /Debug/
+/html/
+*.exe
+*.a
+*.o
+*.gcda
+*.gcno
+*.d

@@ -10,6 +10,7 @@
 
 namespace cpputil {
 
+//! OpenMPの初期化
 void initOpenMp(int threads = 0);
 
 }

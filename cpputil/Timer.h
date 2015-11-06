@@ -13,10 +13,10 @@
 
 namespace cpputil {
 
-//タイマークラス
+//! タイマークラス
 class Timer {
 public:
-	//fnをtimes回実行して経過したミリ秒を返す
+	//! fnをtimes回実行して経過したミリ秒を返す
 	static int profile(std::function<void ()> fn, int times = 1);
 
 	Timer();

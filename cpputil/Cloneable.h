@@ -10,12 +10,7 @@
 
 namespace cpputil {
 
-#define CPPUTIL_CLONEABLE\
-	virtual clone_type* clone() override {\
-		typedef std::remove_pointer<decltype(this)>::type this_type;\
-		return new this_type(*this);\
-	}
-
+//! cloneできるクラスのインターフェース
 template <class CloneType>
 class Cloneable {
 public:
@@ -23,6 +18,12 @@ public:
 	virtual ~Cloneable() = default;
 	virtual CloneType* clone() = 0;
 };
+
+#define CPPUTIL_CLONEABLE\
+	virtual clone_type* clone() override {\
+		typedef std::remove_pointer<decltype(this)>::type this_type;\
+		return new this_type(*this);\
+	}
 
 }
 
