@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../cpputil/Application.cpp \
+../cpputil/CreatableTest.cpp \
 ../cpputil/EnumUtilTest.cpp \
 ../cpputil/GenericIoTest.cpp \
 ../cpputil/MathUtilTest.cpp \
@@ -16,6 +17,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./cpputil/Application.o \
+./cpputil/CreatableTest.o \
 ./cpputil/EnumUtilTest.o \
 ./cpputil/GenericIoTest.o \
 ./cpputil/MathUtilTest.o \
@@ -27,6 +29,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./cpputil/Application.d \
+./cpputil/CreatableTest.d \
 ./cpputil/EnumUtilTest.d \
 ./cpputil/GenericIoTest.d \
 ./cpputil/MathUtilTest.d \
