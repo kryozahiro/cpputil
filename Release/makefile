@@ -39,19 +39,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: libCppUtil.a
+all: libcpputil.a
 
 # Tool invocations
-libCppUtil.a: $(OBJS) $(USER_OBJS)
+libcpputil.a: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC Archiver'
-	ar -r  "libCppUtil.a" $(OBJS) $(USER_OBJS) $(LIBS)
+	ar -r  "libcpputil.a" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CC_DEPS)$(C++_DEPS)$(OBJS)$(ARCHIVES)$(C_UPPER_DEPS)$(CXX_DEPS)$(CPP_DEPS)$(C_DEPS) libCppUtil.a
+	-$(RM) $(CC_DEPS)$(C++_DEPS)$(OBJS)$(ARCHIVES)$(C_UPPER_DEPS)$(CXX_DEPS)$(CPP_DEPS)$(C_DEPS) libcpputil.a
 	-@echo ' '
 
 .PHONY: all clean dependents

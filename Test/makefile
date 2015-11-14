@@ -39,19 +39,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: CppUtil.exe
+all: cpputil.exe
 
 # Tool invocations
-CppUtil.exe: $(OBJS) $(USER_OBJS)
+cpputil.exe: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MinGW C++ Linker'
-	g++ -s -static -fopenmp --coverage -o "CppUtil.exe" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -s -static -fopenmp --coverage -o "cpputil.exe" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(OBJS)$(C_UPPER_DEPS)$(CXX_DEPS)$(CPP_DEPS)$(C_DEPS) CppUtil.exe
+	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(OBJS)$(C_UPPER_DEPS)$(CXX_DEPS)$(CPP_DEPS)$(C_DEPS) cpputil.exe
 	-@echo ' '
 
 .PHONY: all clean dependents
