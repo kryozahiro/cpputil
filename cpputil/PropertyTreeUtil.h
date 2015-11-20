@@ -13,7 +13,7 @@
 
 namespace cpputil {
 
-//! domain内からpathの内容がcontentであるような子を探す
+/// domain内からpathの内容がcontentであるような子を探す
 /** pathの選び方は保障されない
  */
 template<typename Key, typename Data, typename KeyCompare>
@@ -49,7 +49,7 @@ const boost::property_tree::basic_ptree<Key, Data, KeyCompare>& search(
 	throw pt::ptree_bad_path("ptree not found", path);
 }
 
-//! \<node name="name-of-node" ref="reference-to-name-of-other-node"/>の形式で表現される参照の解決
+/// \<node name="name-of-node" ref="reference-to-name-of-other-node"/>の形式で表現される参照の解決
 template<typename Key, typename Data, typename KeyCompare>
 const boost::property_tree::basic_ptree<Key, Data, KeyCompare>& solveReference(
 		const boost::property_tree::basic_ptree<Key, Data, KeyCompare>& domain,

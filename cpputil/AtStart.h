@@ -10,7 +10,7 @@
 
 namespace cpputil {
 
-//! 起動時に実行する処理を設定する
+/// 起動時に実行する処理を設定する
 /** # 使用例
  *  CPPUTIL_AT_START(UniqueNameInWholeProgram) {\n
  *  	//...;\n

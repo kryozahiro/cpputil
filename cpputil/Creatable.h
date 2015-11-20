@@ -10,7 +10,7 @@
 
 namespace cpputil {
 
-//! createできるクラスのインターフェース
+/// createできるクラスのインターフェース
 template <class CreateType, class... Args>
 class Creatable {
 public:

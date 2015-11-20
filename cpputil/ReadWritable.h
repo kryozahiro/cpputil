@@ -12,7 +12,7 @@
 
 namespace cpputil {
 
-//! ストリーム入出力可能なクラスのインターフェース
+/// ストリーム入出力可能なクラスのインターフェース
 class ReadWritable {
 public:
 	virtual ~ReadWritable() = default;

@@ -13,7 +13,7 @@
 
 namespace cpputil {
 
-//! [first, last)からランダムに選んで[first, middle)に配置し、残りを後ろへ回す
+/// [first, last)からランダムに選んで[first, middle)に配置し、残りを後ろへ回す
 template <class RandomIt, class URNG>
 void partial_shuffle(RandomIt first, RandomIt middle, RandomIt last, URNG&& g) {
 	typedef typename std::iterator_traits<RandomIt>::difference_type diff_t;
@@ -30,7 +30,7 @@ void partial_shuffle(RandomIt first, RandomIt middle, RandomIt last, URNG&& g) {
 	}
 }
 
-//! 組み合わせの実装
+/// 組み合わせの実装
 namespace detail {
 template <class BidirectionalIterator>
 bool next_combination(BidirectionalIterator first1, BidirectionalIterator last1,
@@ -68,13 +68,13 @@ bool next_combination(BidirectionalIterator first1, BidirectionalIterator last1,
 }
 }
 
-//! 次の組み合わせを返す
+/// 次の組み合わせを返す
 template <class BidirectionalIterator>
 inline bool next_combination(BidirectionalIterator first, BidirectionalIterator middle, BidirectionalIterator last) {
 	return detail::next_combination(first, middle, middle, last);
 }
 
-//! 前の組み合わせを返す
+/// 前の組み合わせを返す
 template <class BidirectionalIterator>
 inline bool prev_combination(BidirectionalIterator first, BidirectionalIterator middle, BidirectionalIterator last) {
 	return detail::next_combination(middle, last, first, middle);

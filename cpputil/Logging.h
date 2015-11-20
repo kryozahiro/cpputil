@@ -12,7 +12,7 @@
 
 namespace cpputil {
 
-//! ロギングを行う基本クラス
+/// ロギングを行う基本クラス
 template <class Logger>
 class LoggingBase {
 public:
@@ -22,16 +22,16 @@ public:
 	LoggingBase(std::shared_ptr<LoggerType>& logger);
 	virtual ~LoggingBase() = default;
 
-	//! ロガーの取得
+	/// ロガーの取得
 	std::shared_ptr<LoggerType> getLogger();
 
-	//! ロガーの設定
+	/// ロガーの設定
 	virtual void setLogger(std::shared_ptr<LoggerType>& logger);
 
-	//! ロガーの有効状態の取得
+	/// ロガーの有効状態の取得
 	bool isLoggerEnabled() const;
 
-	//! ロガーの有効状態の設定
+	/// ロガーの有効状態の設定
 	virtual void setLoggerEnabled(bool enabled);
 
 private:
@@ -52,6 +52,9 @@ LoggingBase<Logger>::LoggingBase(std::shared_ptr<LoggerType>& logger) : logger(l
 
 template <class Logger>
 std::shared_ptr<typename LoggingBase<Logger>::LoggerType> LoggingBase<Logger>::getLogger() {
+	if (!logger) {
+		assert(false);
+	}
 	return logger;
 }
 
@@ -69,7 +72,6 @@ template <class Logger>
 void LoggingBase<Logger>::setLoggerEnabled(bool enabled) {
 	if (!logger and enabled) {
 		assert(false);
-		return;
 	}
 	loggerEnabled = enabled;
 }

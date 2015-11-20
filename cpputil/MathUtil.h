@@ -25,13 +25,13 @@ using namespace boost::math::constants;
 // スケーリング
 //----------------------------------------
 
-//! 線形変換
+/// 線形変換
 template <class T>
 T scale(T value, T ratio, T bias) {
 	return ratio * value + bias;
 }
 
-//! 範囲の線形変換
+/// 範囲の線形変換
 template <class T>
 T scale(T value, std::pair<T, T> from_range, std::pair<T, T> to_range) {
 	T ratio = (to_range.second - to_range.first) / (from_range.second - from_range.first);
@@ -39,7 +39,7 @@ T scale(T value, std::pair<T, T> from_range, std::pair<T, T> to_range) {
 	return scale(value, ratio, bias);
 }
 
-//! 全体の平均を保って最大値を平均のscaling倍にするような線形変換
+/// 全体の平均を保って最大値を平均のscaling倍にするような線形変換
 /** f(mean) = a * mean + b = average
  *  f(max) = a * max + b = scale * average
  */
@@ -54,19 +54,19 @@ T scale(T value, T mean, T max, T scaling) {
 // 角度
 //----------------------------------------
 
-//! 度数からラジアンへ変換
+/// 度数からラジアンへ変換
 template <class T>
 T toRadian(T deg) {
 	return deg * pi<T>() / 180.0;
 }
 
-//! ラジアンから度数へ変換
+/// ラジアンから度数へ変換
 template <class T>
 T toDegree(T rad) {
 	return rad * 180.0 / pi<T>();
 }
 
-//! -PI < rad <= PIに正規化
+/// -PI < rad <= PIに正規化
 template <class T>
 T normalize(T rad) {
 	rad = std::remainder(rad, 2.0 * pi<T>());
@@ -76,7 +76,7 @@ T normalize(T rad) {
 	return rad;
 }
 
-//! 正規化つきの回転
+/// 正規化つきの回転
 template <class T>
 T rotate(T baseRad, T relativeRad) {
 	return normalize(baseRad + relativeRad);
@@ -87,19 +87,19 @@ T rotate(T baseRad, T relativeRad) {
 // テンプレート引数は実数のみ使用可能
 //----------------------------------------
 
-//! ペアから複素数へ変換
+/// ペアから複素数へ変換
 template <class T, class U, class V>
 std::complex<T> toComplex(std::pair<U, V> p) {
 	return std::complex<T>(p.first, p.second);
 }
 
-//! 複素数からペアへ変換
+/// 複素数からペアへ変換
 template <class T, class U, class V>
 std::pair<T, U> toPair(std::complex<V> z) {
 	return std::make_pair<T, U>(z.real(), z.imag());
 }
 
-//! 単位長への正規化
+/// 単位長への正規化
 template <class T>
 std::complex<T> normalize(std::complex<T> z) {
 	return z / std::abs(z);
@@ -109,19 +109,19 @@ std::complex<T> normalize(std::complex<T> z) {
 // ノルムと距離
 //----------------------------------------
 
-//! 実数版Lp-ノルム
+/// 実数版Lp-ノルム
 template <class T>
 T lpNorm(std::complex<T> z, T p) {
 	return std::pow(std::pow(std::fabs(z.real()), p) + std::pow(std::fabs(z.imag()), p), 1.0 / p);
 }
 
-//! 実数版Lp-ノルムによる距離
+/// 実数版Lp-ノルムによる距離
 template <class T>
 T lpDistance(std::complex<T> z0, std::complex<T> z1, T p) {
 	return lpNorm<T>(z1 - z0, p);
 }
 
-//! 整数版Lp-ノルムの実装の詳細
+/// 整数版Lp-ノルムの実装の詳細
 namespace detail {
 
 template <class T, int p>
@@ -162,49 +162,49 @@ T lpNormHelper<T, INT_MAX>::lpNorm(std::complex<T> z) {
 
 }
 
-//! 整数版Lp-ノルム
+/// 整数版Lp-ノルム
 template <class T, int p>
 T lpNorm(std::complex<T> z) {
 	return detail::lpNormHelper<T, p>::lpNorm(z);
 }
 
-//! 整数版Lp-ノルムによる距離
+/// 整数版Lp-ノルムによる距離
 template <class T, int p>
 T lpDistance(std::complex<T> z0, std::complex<T> z1) {
 	return lpNorm<T, p>(z1 - z0);
 }
 
-//! マンハッタンノルム
+/// マンハッタンノルム
 template <class T>
 T manhattanNorm(std::complex<T> z) {
 	return lpNorm<T, 1>(z);
 }
 
-//! マンハッタン距離
+/// マンハッタン距離
 template <class T>
 T manhattanDistance(std::complex<T> z0, std::complex<T> z1) {
 	return manhattanNorm(z1 - z0);
 }
 
-//! ユークリッドノルム
+/// ユークリッドノルム
 template <class T>
 T euclideanNorm(std::complex<T> z) {
 	return lpNorm<T, 2>(z);
 }
 
-//! ユークリッド距離
+/// ユークリッド距離
 template <class T>
 T euclideanDistance(std::complex<T> z0, std::complex<T> z1) {
 	return euclideanNorm(z1 - z0);
 }
 
-//! チェス盤ノルム
+/// チェス盤ノルム
 template <class T>
 T chessboardNorm(std::complex<T> z) {
 	return lpNorm<T, INT_MAX>(z);
 }
 
-//! チェス盤距離
+/// チェス盤距離
 template <class T>
 T chessboardDistance(std::complex<T> z0, std::complex<T> z1) {
 	return chessboardNorm(z1 - z0);
@@ -214,31 +214,31 @@ T chessboardDistance(std::complex<T> z0, std::complex<T> z1) {
 // アフィン変換
 //----------------------------------------
 
-//! 平行移動
+/// 平行移動
 template <class T>
 std::complex<T> translate(std::complex<T> z, std::complex<T> translation) {
 	return z + translation;
 }
 
-//! 回転
+/// 回転
 template <class T>
 std::complex<T> rotate(std::complex<T> z, double rad) {
 	return z * std::polar(1.0, rad);
 }
 
-//! 拡縮
+/// 拡縮
 template <class T>
 std::complex<T> scale(std::complex<T> z, std::complex<T> scaling) {
 	return std::complex<T>(z.real() * scaling.real(), z.imag() * scaling.imag());
 }
 
-//! 変換
+/// 変換
 template <class T>
 std::complex<T> transform(std::complex<T> z, std::complex<T> translation, double rotation, std::complex<T> scaling = std::complex<T>(1, 1)) {
 	return translate(rotate(scale(z, scaling), rotation), translation);
 }
 
-//! 変換オブジェクト
+/// 変換オブジェクト
 template <class T>
 class Transformation : private boost::equality_comparable<Transformation<T>, Transformation<T>> {
 public:
@@ -246,7 +246,7 @@ public:
 	Transformation(std::complex<T> translation, T rotation, std::complex<T> scaling);
 
 	//@{
-	//!アクセサ
+	///アクセサ
 	std::complex<T> translation() const;
 	void translation(std::complex<T> t);
 	T rotation() const;
@@ -255,13 +255,13 @@ public:
 	void scaling(std::complex<T> s);
 	//@}
 
-	//! 位置を変換する
+	/// 位置を変換する
 	std::complex<T> operator*(std::complex<T> z);
 
-	//! 逆変換の取得
+	/// 逆変換の取得
 	Transformation<T> inverse();
 
-	//! 変換オブジェクトを姿勢と解釈して変換させる
+	/// 変換オブジェクトを姿勢と解釈して変換させる
 	/** local == trueなら姿勢を中心とする座標系での相対変換
 	 *  local == falseなら姿勢を表現する座標系での絶対変換
 	 */
@@ -271,18 +271,18 @@ public:
 	void transform(const Transformation<T>& t, bool local = true);
 	Transformation<T>& operator*=(const Transformation<T>& t);
 
-	//! 変換の比較
+	/// 変換の比較
 	template <class X>
 	friend bool operator==(const Transformation<X>& lhs, const Transformation<X>& rhs);
 
 private:
-	//! 平行移動
+	/// 平行移動
 	std::complex<T> translation_ = {0, 0};
 
-	//! 回転
+	/// 回転
 	T rotation_ = 0;
 
-	//! 拡縮
+	/// 拡縮
 	std::complex<T> scaling_ = {1, 1};
 };
 

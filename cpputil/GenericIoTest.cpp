@@ -5,65 +5,74 @@
  *      Author: kryozahiro
  */
 
-#include "GenericIo.h"
-
 #include <boost/lexical_cast.hpp>
-
 #include "TestUtil.h"
-using namespace std;
-using namespace cpputil;
+#include "GenericIo.h"
 
 BOOST_AUTO_TEST_SUITE(GenericIoSuite)
 
 BOOST_AUTO_TEST_CASE(PairIoCase) {
-	const string str("(1, 2.5)");
-	pair<int, double> p;
+	const std::string str("(1, 2.5)");
+	std::pair<int, double> p;
 
-	//stream
-	stringstream ss(str);
+	//stream read
+	std::stringstream ss;
+	ss << str;
 	ss >> p;
+	BOOST_CHECK_EQUAL(p, (std::pair<int, double>(1, 2.5)));
+
+	//stream write
 	ss.str("");
 	ss << p;
-	assert((p == pair<int, double>(1, 2.5)));
-	assert(ss.str() == str);
+	BOOST_CHECK_EQUAL(str, ss.str());
 
 	//lexical_cast
-	assert((p == boost::lexical_cast<pair<int, double>>(str)));
-	assert(boost::lexical_cast<string>(p) == str);
+	BOOST_CHECK_EQUAL(p, (boost::lexical_cast<std::pair<int, double>>(str)));
+	BOOST_CHECK_EQUAL(boost::lexical_cast<std::string>(p), str);
 }
+
+using namespace std;
 
 BOOST_AUTO_TEST_CASE(TupleIoCase) {
 	const string str("(1, 2.5, a)");
 	tuple<int, double, char> t;
 
-	//stream
-	stringstream ss(str);
+	//stream read
+	stringstream ss;
+	ss << str;
 	ss >> t;
+	BOOST_CHECK_EQUAL(t, (tuple<int, double, char>(1, 2.5, 'a')));
+
+	//stream write
 	ss.str("");
 	ss << t;
-	assert((t == tuple<int, double, char>(1, 2.5, 'a')));
-	assert(ss.str() == str);
+	BOOST_CHECK_EQUAL(str, ss.str());
 
 	//lexical_cast
-	assert((t == boost::lexical_cast<tuple<int, double, char>>(str)));
-	assert(boost::lexical_cast<string>(t) == str);
+	BOOST_CHECK_EQUAL(t, (boost::lexical_cast<tuple<int, double, char>>(str)));
+	BOOST_CHECK_EQUAL(boost::lexical_cast<string>(t), str);
 }
+
+using namespace cpputil;
 
 BOOST_AUTO_TEST_CASE(ContainerIoCase) {
 	const string str("[1, 2, 3]");
-	vector<int> vec;
+	vector<int> v;
 
-	//stream
-	stringstream ss(str);
-	ss >> vec;
+	//stream read
+	stringstream ss;
+	ss << str;
+	ss >> v;
+	BOOST_CHECK_EQUAL(v, vector<int>({1, 2, 3}));
+
+	//stream write
 	ss.str("");
-	ss << vec;
-	assert(vec == vector<int>({1, 2, 3}));
-	assert(ss.str() == str);
+	ss << v;
+	BOOST_CHECK_EQUAL(str, ss.str());
 
 	//lexical_cast
-	assert(vec == boost::lexical_cast<vector<int>>(str));
-	assert(boost::lexical_cast<string>(vec) == str);
+	BOOST_CHECK_EQUAL(v, boost::lexical_cast<vector<int>>(str));
+	BOOST_CHECK_EQUAL(boost::lexical_cast<string>(v), str);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

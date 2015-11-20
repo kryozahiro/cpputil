@@ -16,7 +16,7 @@
 
 namespace cpputil {
 
-//! スコープ
+/// スコープ
 class Scope {
 public:
 	enum Type {
@@ -25,34 +25,34 @@ public:
 	};
 	Scope(Type type);
 
-	//! スコープの種類を取得する
+	/// スコープの種類を取得する
 	Type getType() const;
 
-	//! 子スコープを取得する
+	/// 子スコープを取得する
 	std::shared_ptr<Scope> getScope(const std::string& name);
 
-	//! 子スコープを追加する
+	/// 子スコープを追加する
 	std::shared_ptr<Scope> addScope(Type type, const std::string& name);
 
-	//! 関数またはメンバ関数またはメンバ変数を取得する
+	/// 関数またはメンバ関数またはメンバ変数を取得する
 	template <class T>
 	std::function<T> getFunction(const std::string& name) {
 		return std::experimental::any_cast<std::function<T>>(functions.at(name));
 	}
 
-	//! 関数またはメンバ関数またはメンバ変数を追加する
+	/// 関数またはメンバ関数またはメンバ変数を追加する
 	template <class T>
 	void addFunction(const std::string& name, std::function<T> f) {
 		functions[name] = f;
 	}
 
-	//! 変数を取得する
+	/// 変数を取得する
 	template <class T>
 	T& getVariable(const std::string& name) {
 		return *std::experimental::any_cast<T*>(variables.at(name));
 	}
 
-	//! 変数を追加する
+	/// 変数を追加する
 	template <class T>
 	void addVariable(const std::string& name, T* v) {
 		variables[name] = v;

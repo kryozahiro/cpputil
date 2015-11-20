@@ -14,7 +14,7 @@
 
 namespace cpputil {
 
-//! リフレクション情報を保持するクラス
+/// リフレクション情報を保持するクラス
 class Reflection : public boost::serialization::singleton<Reflection> {
 public:
 	std::shared_ptr<Scope> getGlobal();

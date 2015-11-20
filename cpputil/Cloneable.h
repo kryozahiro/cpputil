@@ -10,7 +10,7 @@
 
 namespace cpputil {
 
-//! cloneできるクラスのインターフェース
+/// cloneできるクラスのインターフェース
 template <class CloneType>
 class Cloneable {
 public:

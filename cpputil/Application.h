@@ -23,27 +23,27 @@ namespace detail {
 //終了状態かどうか
 bool isEnd();
 
-//! アプリケーションクラス
+/// アプリケーションクラス
 /** コマンドライン引数のパースや終了時のシグナルハンドラの設定を行う
  */
 template <class ConcreteApplication>
 class Application : public boost::serialization::singleton<ConcreteApplication> {
 public:
-	//! main関数
+	/// main関数
 	int main(int argc, char* argv[]);
 
-	//! 終了状態かどうか
+	/// 終了状態かどうか
 	bool isEnd();
 
 protected:
 	Application();
 	virtual ~Application() = default;
 
-	//! オプションの初期化
+	/// オプションの初期化
 	virtual void initOptions(boost::program_options::options_description& options,
 			boost::program_options::positional_options_description& positional) = 0;
 
-	//! 個別のアプリケーションの動作
+	/// 個別のアプリケーションの動作
 	virtual int mainImpl(boost::program_options::variables_map& args) = 0;
 
 private:
