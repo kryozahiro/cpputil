@@ -113,7 +113,7 @@ private:\
 		Enum value;\
 	} enumHolder;\
 };\
-static_assert(std::is_pod<Name>(), "ENUM_UTIL should be POD");
+static_assert(std::is_pod<Name>(), "ENUM_UTIL should be POD")
 
 }
 
