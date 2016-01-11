@@ -53,7 +53,7 @@ LoggingBase<Logger>::LoggingBase(std::shared_ptr<LoggerType>& logger) : logger(l
 template <class Logger>
 std::shared_ptr<typename LoggingBase<Logger>::LoggerType> LoggingBase<Logger>::getLogger() {
 	if (!logger) {
-		assert(false);
+		throw std::logic_error("LoggingBase<Logger>::getLogger: no logger is set.");
 	}
 	return logger;
 }
@@ -71,7 +71,7 @@ bool LoggingBase<Logger>::isLoggerEnabled() const {
 template <class Logger>
 void LoggingBase<Logger>::setLoggerEnabled(bool enabled) {
 	if (!logger and enabled) {
-		assert(false);
+		throw std::logic_error("LoggingBase<Logger>::setLoggerEnabled: no logger is set.");
 	}
 	loggerEnabled = enabled;
 }

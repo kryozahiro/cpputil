@@ -187,6 +187,10 @@ namespace boost {
 	namespace test_tools {
 		using cpputil::operator>>;
 		using cpputil::operator<<;
+		namespace tt_detail {
+			using cpputil::operator>>;
+			using cpputil::operator<<;
+		}
 	}
 }
 

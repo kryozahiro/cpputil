@@ -43,8 +43,8 @@ BOOST_AUTO_TEST_CASE(CppUtilEnumCase) {
 		Unscoped d = static_cast<Unscoped>(4);
 		int x = d;
 		int y = THIRD;
-		assert(SECOND == a and a == b and b == c and c == SECOND);
-		assert(d == x and x == y);
+		BOOST_CHECK(SECOND == a and a == b and b == c and c == SECOND);
+		BOOST_CHECK(d == x and x == y);
 		switch (a) { default: break; }
 		switch (THIRD) { case THIRD: break; default: break; }
 	}
@@ -55,8 +55,8 @@ BOOST_AUTO_TEST_CASE(CppUtilEnumCase) {
 		Scoped d = static_cast<Scoped>(4);
 		int x = static_cast<int>(d);
 		int y = static_cast<int>(Scoped::GAMMA);
-		assert(Scoped::BETA == a and a == b and b == c and c == Scoped::BETA);
-		assert(static_cast<int>(d) == x and x == y);
+		BOOST_CHECK(Scoped::BETA == a and a == b and b == c and c == Scoped::BETA);
+		BOOST_CHECK(static_cast<int>(d) == x and x == y);
 		switch (a) { default: break; }
 		switch (Scoped::GAMMA) { case Scoped::GAMMA: break; default: break; }
 	}
@@ -67,32 +67,32 @@ BOOST_AUTO_TEST_CASE(CppUtilEnumCase) {
 		CppUtil d = static_cast<CppUtil>(4);
 		int x = d;
 		int y = CppUtil::BLUE;
-		assert(CppUtil::GREEN == a and a == b and b == c and c == CppUtil::GREEN);
-		assert(d == x and x == y);
+		BOOST_CHECK(CppUtil::GREEN == a and a == b and b == c and c == CppUtil::GREEN);
+		BOOST_CHECK(d == x and x == y);
 		switch (a) { default: break; }
 		switch (CppUtil::BLUE) { case CppUtil::BLUE: break; default: break; }
 	}
 
 	//比較演算子
-	assert(CppUtil::RED == CppUtil::RED and !(CppUtil::RED == CppUtil::GREEN));
-	assert(!(CppUtil::RED != CppUtil::RED) and CppUtil::RED != CppUtil::GREEN);
-	assert(CppUtil::RED <= CppUtil::RED and CppUtil::RED <= CppUtil::GREEN);
-	assert(!(CppUtil::RED < CppUtil::RED) and CppUtil::RED < CppUtil::GREEN);
-	assert(CppUtil::BLUE >= CppUtil::BLUE and CppUtil::BLUE >= CppUtil::GREEN);
-	assert(!(CppUtil::BLUE > CppUtil::BLUE) and CppUtil::BLUE > CppUtil::GREEN);
+	BOOST_CHECK(CppUtil::RED == CppUtil::RED and !(CppUtil::RED == CppUtil::GREEN));
+	BOOST_CHECK(!(CppUtil::RED != CppUtil::RED) and CppUtil::RED != CppUtil::GREEN);
+	BOOST_CHECK(CppUtil::RED <= CppUtil::RED and CppUtil::RED <= CppUtil::GREEN);
+	BOOST_CHECK(!(CppUtil::RED < CppUtil::RED) and CppUtil::RED < CppUtil::GREEN);
+	BOOST_CHECK(CppUtil::BLUE >= CppUtil::BLUE and CppUtil::BLUE >= CppUtil::GREEN);
+	BOOST_CHECK(!(CppUtil::BLUE > CppUtil::BLUE) and CppUtil::BLUE > CppUtil::GREEN);
 	CppUtil green = CppUtil::GREEN;
-	assert(CppUtil::RED < green and green < CppUtil::BLUE);
+	BOOST_CHECK(CppUtil::RED < green and green < CppUtil::BLUE);
 
 	//文字列変換
-	assert(CppUtil("BLUE") == CppUtil::BLUE);
-	assert(to_string(CppUtil::BLUE) == "4");
-	assert(to_string(CppUtil(CppUtil::BLUE)) == "BLUE");
+	BOOST_CHECK_EQUAL(CppUtil("BLUE"), CppUtil::BLUE);
+	BOOST_CHECK_EQUAL(to_string(CppUtil::BLUE), "4");
+	BOOST_CHECK_EQUAL(to_string(CppUtil(CppUtil::BLUE)), "BLUE");
 	CppUtil blue = CppUtil::BLUE;
-	assert(to_string(blue) == "BLUE");
+	BOOST_CHECK_EQUAL(to_string(blue), "BLUE");
 
 	//入出力演算子
-	assert(boost::lexical_cast<CppUtil>("BLUE") == CppUtil::BLUE);
-	assert(boost::lexical_cast<std::string>(CppUtil(CppUtil::BLUE)) == "BLUE");
+	BOOST_CHECK_EQUAL(boost::lexical_cast<CppUtil>("BLUE"), CppUtil::BLUE);
+	BOOST_CHECK_EQUAL(boost::lexical_cast<std::string>(CppUtil(CppUtil::BLUE)), "BLUE");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
